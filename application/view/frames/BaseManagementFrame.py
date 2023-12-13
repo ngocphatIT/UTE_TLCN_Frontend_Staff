@@ -7,31 +7,45 @@ from ...myLib.DataGridView import DataGridView
 class BaseManagementFrame(Frame):
     def __init__(self,master,mainScreen,model,service,addDataDialog,editDataDialog,title):
         Frame.__init__(self)
+        if mainScreen is None:
+            mainScreen = master.master
         self.master = master
         self.lblTitle=Label(self,text=title)
         self.ctrlFrame=Frame(self)
         self.model=model()
-        self.myTable=DataGridView(self,IDColumns=self.model.getColumnID(),showColumns=self.model.getColumnShow(), show="headings")
+        self.myTable=DataGridView(self,IDColumns=['STT']+self.model.getColumnID(),showColumns=['STT']+self.model.getColumnShow(), show="headings",height=30)
+    
         self.addDataDialog=addDataDialog
         self.editDataDialog=editDataDialog
         self.service=service()
         self.mainScreen=mainScreen
-        self.setupTitle()
-        self.setupCtrlDefault()
-        self.packCtrlDefault()
+
     
     def getDataFromBackend(self):
-        data=self.service.getAll()[0]
-        self.myTable.addRows(data)
-        # # print(data)
-        # self.runDemo()
+        try:
+            response=self.handleErrorRepsonse(self.service.getByFilter())
+            if response[0]:
+                self.myTable.addRows(response[1]['message'])
+        except Exception as e:
+            print(e)
+            # print(response)
     def addModel(self,model):
         self.myTable.addRow(model)
     def btnAddAction(self):
         # self.mainScreen.hidden()
         self.addDataDialog(self.mainScreen,self).run()
+    def handleErrorRepsonse(self,response):
+        if response['status_code']==403:
+            messagebox.showerror("Lỗi xác thực","Xác thưc hết hạn! Vui lòng đăng nhập lại")
+            self.master.goBackLogin()
+            return False,''
+        return True,response
+    def error403(self):
+        messagebox.showerror("Lỗi xác thực","Xác thực hết hạn! Vui lòng đăng nhập lại")
+        self.master.goToLogin()
     def btnEditAction(self):
-        self.editDataDialog(self.mainScreen,self,self.myTable.getSelectedItem(mode='MAP')).run()
+        selected=self.myTable.getSelectedItem(mode='MAP')
+        self.editDataDialog(self.mainScreen,self,selected).run()
     def btnDeleteAction(self):
         selected=self.myTable.getSelectedItem(mode='MAP')
         name=selected[self.model.getColumnID()[1]]
@@ -43,8 +57,15 @@ class BaseManagementFrame(Frame):
         else:
             pass
     def btnSearchAction(self):
-        self.refreshData()
-        self.myTable.search(self.typeSearch.get(),self.entrySearch.get())
+        self.myTable.removeAllData()
+        try:
+            response=self.handleErrorRepsonse(self.service.getByFilter({self.myTable.convertShowColumnToIDColumn(self.typeSearch.get()):self.entrySearch.get()}))
+            if response[0]:
+                self.myTable.addRows(response[1]['message'])
+        except Exception as e:
+            print(e)
+            print(response)
+        
     def refreshData(self):
         self.myTable.removeAllData()
         self.getDataFromBackend()
@@ -56,9 +77,9 @@ class BaseManagementFrame(Frame):
         self.btnAdd=Button(self.ctrlFrame,text=f"Thêm {modelName}",command=self.btnAddAction)
         self.btnEdit=Button(self.ctrlFrame,text=f'Chỉnh sửa {modelName}',command=self.btnEditAction)
         self.btnRemove=Button(self.ctrlFrame,text=f'Xóa {modelName}',command=self.btnDeleteAction)
-        self.btnRefreshData=Button(self.ctrlFrame,text=f'Tải lại',command=self.btnRefreshAction)
+        self.btnRefreshData=Button(self.ctrlFrame,text=f'Tải dữ liệu mẫu',command=self.btnRefreshAction)
         self.lblSearch=Label(self.ctrlFrame,text="Tìm kiếm")
-        self.typeSearch=Combobox(self.ctrlFrame,values=self.myTable.showColumns,state='readonly')
+        self.typeSearch=Combobox(self.ctrlFrame,values=self.model.getColumnShow(),state='readonly')
         self.typeSearch.current(0)
         self.searchValue=StringVar()
         self.entrySearch=Entry(self.ctrlFrame,textvariable=self.searchValue)
@@ -76,7 +97,7 @@ class BaseManagementFrame(Frame):
         self.lblTitle.pack()
         self.ctrlFrame.pack(pady=10)
         # self.runDemo()
-        self.getDataFromBackend()
+        # self.getDataFromBackend()
         self.packData()
         self.pack()
     def runDemo(self):

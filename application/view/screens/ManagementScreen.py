@@ -1,9 +1,15 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import messagebox
 # from ..frames.StudentManagementFrame import StudentManagementFrame
 from ..frames.CourseCategoryManagementFrame import CourseCategoryManagementFrame
 from ..frames.CourseManagementFrame import CourseManagementFrame
-# from ...myLib.DataGridView import DataGridView
+from ..frames.ClassManagementFrame import ClassManagementFrame
+from ..frames.StudentManagementFrame import StudentManagementFrame
+from ..frames.LecturerManagementFrame import LecturerManagementFrame
+from ..frames.AccountManagementFrame import AccountManagementFrame
+from ..frames.ViewParticipantsFrame import ViewParticipantsFrame
+from ...service.AccountService import AccountService
+_accountService=AccountService
 class ManagementScreen(Frame):
     def __init__(self,master):
         Frame.__init__(self)
@@ -15,21 +21,22 @@ class ManagementScreen(Frame):
         # Create the Teacher Management menu
         myProfile = Menu(menubar, tearoff=0)
         myProfile.add_command(label="My profile")
-        # myProfile.add_command(label="Edit Teacher")
+        myProfile.add_command(label="Đăng xuất",command=self.logout )
+
         # myProfile.add_command(label="Delete Teacher")
         menubar.add_cascade(label="My Profile", menu=myProfile)
 
         groupClass = Menu(menubar, tearoff=0)
         groupClass.add_command(label="Course Category Management",command=lambda: self.showFrame("Course Category Management"))
         groupClass.add_command(label="Course Management",command=lambda: self.showFrame("Course Management"))
-        groupClass.add_command(label="Class Management")
+        groupClass.add_command(label="Class Management",command=lambda: self.showFrame("Class Management"))
         menubar.add_cascade(label="Group Class Management", menu=groupClass)
 
         # Create the Student Management menu
         groupUser = Menu(menubar, tearoff=0)
         groupUser.add_command(label="Student Management",command=lambda: self.showFrame("Student Management"))
-        groupUser.add_command(label="Lecture Management")
-        groupUser.add_command(label="Account Management")
+        groupUser.add_command(label="Lecturer Management",command=lambda: self.showFrame("Lecturer Management"))
+        groupUser.add_command(label="Account Management",command=lambda: self.showFrame("Account Management"))
         menubar.add_cascade(label="User Management", menu=groupUser)
         self.master.config(menu=menubar)
         # self.showFrame()
@@ -38,8 +45,22 @@ class ManagementScreen(Frame):
             # 'Student Management':StudentManagementFrame
             'Course Category Management':CourseCategoryManagementFrame,
             'Course Management':CourseManagementFrame,
+            'Class Management':ClassManagementFrame,
+            'Student Management':StudentManagementFrame,
+            'Lecturer Management':LecturerManagementFrame,
+            'Account Management':AccountManagementFrame,
+            'View Participants':ViewParticipantsFrame
+            
+            
         }
         return dictFrame[frame](self)
+    def showViewParticipants(self,classID,className):
+        self.lastFrame=self.currentFrame
+        self.currentFrame=ViewParticipantsFrame(master=self,classID=classID,className=className)
+        if self.lastFrame is not None:
+            self.lastFrame.pack_forget()
+        self.currentFrame.packFrame()
+        self.currentFrame.tkraise()
     def showFrame(self,name):
         self.lastFrame=self.currentFrame
         self.currentFrame=self.getFrame(name)
@@ -47,6 +68,14 @@ class ManagementScreen(Frame):
             self.lastFrame.pack_forget()
         self.currentFrame.packFrame()
         self.currentFrame.tkraise()
+    def logout(self):
+        res=messagebox.askquestion('Xóa', f'Bạn có chắc chắn muốn đăng xuất không?')
+        if res=='yes':
+            response=_accountService().logout()
+            if response['status_code']==201:
+                self.master.goToLogin()
+    def goBackLogin(self):
+        return self.master.goToLogin()
 
 
 

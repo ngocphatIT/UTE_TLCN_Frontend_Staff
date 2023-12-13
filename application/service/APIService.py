@@ -1,15 +1,17 @@
 
 import requests
-import threading
-import datetime
+from tkinter import messagebox
 import json
+from ..service.SQLLiteService import SessionDataService
+_session = SessionDataService
+headers={'Authorization':SessionDataService().getAuthorization()}#{'Authorization':'eyJhbGciOiAiU0hBMjU2IiwgInR5cCI6ICJKV1QifQ==.eyJleHAiOiAiMjAyMy0xMi0wOCAwMToxMDoxOCIsICJpYXQiOiAiMjAyMy0xMi0wNyAxMzoxMDoxOCIsICJzdWIiOiA5OTkyNDg1MjksICJyb2xlIjogIkFETUlOIiwgIm9iamVjdCI6IHt9fQ==.81456ee50f0aa12e0d29bd9335c2f4d917fdbf47d4a04cc3905cd2551707c0f5'}
 class APIService:
     def __init__(self):
-        from ..config import myConfig
-        if myConfig.getMODE()=='DEV':
-            self.backendURL='http://localhost:5000'
-        else:
-            pass
+        # from ..config import myConfig
+        # if myConfig.getMODE()=='DEV':
+            self.backendURL='http://127.0.0.1:5000'
+        # else:
+            # pass
     # def sendRequest(self, request, data={}, method="GET"):
     #     from ..config import myConfig
     #     isCanSendRequest = False
@@ -30,16 +32,26 @@ class APIService:
         my_json = response.content.decode('utf8')
         return json.loads(my_json)
     def sendRequest(self, request, data={}, method="GET"):
-        from ..config import myConfig
-        if method == "GET":
-            response=requests.get(self.backendURL + request)
-        elif method=='POST':
-            response=requests.post(self.backendURL + request, json=data)
-        elif method == 'PUT':
-            response=requests.put(self.backendURL + request, json=data)
-        elif method=='DELETE':
-            response=requests.delete(self.backendURL + request)
-        print(response)
-        myConfig.setIS_WAITING_RESPONSE(False)
-        myConfig.setIS_READ_RESPONSE(False)
-        return self.convertResponseToJson(response),response.status_code
+        try:
+            if method == "GET":
+                response=requests.get(self.backendURL + request,headers=headers)
+            elif method=='POST':
+                response=requests.post(self.backendURL + request, json=data,headers=headers)
+            elif method == 'PUT':
+                response=requests.put(self.backendURL + request, json=data,headers=headers)
+            elif method=='DELETE':
+                response=requests.delete(self.backendURL + request,headers=headers)
+            return {'message':self.convertResponseToJson(response),'status_code':response.status_code}
+        except Exception as e:
+            print(e)
+            if 'ConnectionError' in str(e):
+                messagebox.showerror('Lỗi kết nối','Mất kết nối với server')
+    def logout(self):
+        try:
+            response=requests.get(self.backendURL + '/api/auth/logout/'+_session().getAuthorization(),headers=headers)
+            return {'message':'','status_code':response.status_code}
+        except Exception as e:
+            print(e)
+            if 'ConnectionError' in str(e):
+                messagebox.showerror('Lỗi kết nối','Mất kết nối với server')
+

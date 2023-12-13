@@ -4,6 +4,7 @@ class BaseModelService:
     def __init__(self,url):
         self.url=url
         self.api=APIService()
+        
     def getAll(self):
         return self.api.sendRequest(f'/api/{self.url}/getAll',method='GET')
     def create(self,newModel):
@@ -12,3 +13,9 @@ class BaseModelService:
         return self.api.sendRequest(f'/api/{self.url}/update/{id}',method='PUT',data=newModel)
     def delete(self,id):
         return self.api.sendRequest(f'/api/{self.url}/delete/{id}',method='DELETE')
+    def getByFilter(self,filter={}):
+        return self.api.sendRequest(f'/api/{self.url}/getByFilter/{filter}',method='GET')
+    def logout(self):
+        return self.api.logout()
+    
+        

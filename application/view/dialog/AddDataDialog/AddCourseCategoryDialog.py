@@ -12,9 +12,9 @@ class AddCourseCategoryDialog(BaseAddDialog):
         self.dictInfoWidget = {'cid':{
             'type':Entry,
             'typeData':StringVar(),
-            'isID':True,
+
         },
-        'name':{
+        'nameCategory':{
             'type':Entry,
             'typeData':StringVar(),
         },

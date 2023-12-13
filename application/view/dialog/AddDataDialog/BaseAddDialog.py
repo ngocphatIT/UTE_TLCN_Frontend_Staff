@@ -47,18 +47,22 @@ class BaseAddDialog(Toplevel):
             column=column+1
             
             w['type']=w['type'](self,font=_fontLbl,width=50)
+            w['type'].config(state='normal')
             w['type'].config(textvariable=w['typeData'])
             if 'values' in w:
                 if type(w['type'])==Combobox:
-
                     w['type'].config(values=w['values'],width=w['width'])
                     if 'currentChoice' not in w:
                         w['currentChoice']=0
                     w['type'].current(w['currentChoice'])
                 else:
                     w['typeData'].set(w['values'])
+            if 'config' in w:
+                w['type'].config(**w['config'])
             if w['isReadOnly']:
                 w['type'].config(state='readonly')
+            if w['isID']:
+                w['type'].config(state='disabled')
             w['type'].grid(row=row,column=column,sticky='W',padx=w['padx'],pady=w['pady'])
             row+=1
         self.btnSubmit=Button(self,text='Submit',command=self.btnSubmitAction)
@@ -68,13 +72,20 @@ class BaseAddDialog(Toplevel):
     def getDataOfForm(self):
         temp={}
         for i in self.dictInfoWidget.keys():
-            temp[i]=self.dictInfoWidget[i]['type'].get()
+            temp[i]=" ".join(self.dictInfoWidget[i]['type'].get().split())
             if type(self.dictInfoWidget[i]['typeData']) == BooleanVar:
-                temp[i]=bool(temp[i])
+                if temp[i]=='True':
+                    temp[i]=True
+                else:
+                    temp[i]=False
         return temp
     def btnSubmitAction(self):
         category=self.getDataOfForm()
-        if self.service.create(category)[1]==201:
+        response=self.service.create(category)
+        if response['status_code']==403:
+            self.master.error403()
+            return
+        if response['status_code']==201:
             self.master.refreshData()
             messagebox.showinfo("Thành công","Thêm thành công!")
         else:

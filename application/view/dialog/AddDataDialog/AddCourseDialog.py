@@ -7,14 +7,16 @@ from ....service.CourseCategoryService import CourseCategoryService
 class AddCourseDialog(BaseAddDialog):
     def __init__(self,tkMaster,master,title='Xin chào',data=None,model=CourseModel,service=CourseService):
         super().__init__(tkMaster,master,title,data,model,service)
-        cat=CourseCategoryService().getAll()
+        cat=CourseCategoryService().getAll()['message']
         catValue=[]
-        for i in cat[0]:
-            catValue.append(i['nameCategory'])
+        for i in cat:
+            if 'isDeleted' not in i:
+                i['isDeleted']=False
+            if not i['isDeleted']:
+                catValue.append(i['nameCategory'])
         self.dictInfoWidget = {'cid':{
             'type':Entry,
-            'typeData':StringVar(),
-            'isID':True
+            'typeData':StringVar()
         },
         'courseName':{
             'type':Entry,
