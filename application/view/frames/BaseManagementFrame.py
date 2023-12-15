@@ -28,27 +28,17 @@ class BaseManagementFrame(Frame):
         self.mainScreen=mainScreen
         if size is not None:
             self.mainScreen.changeSize(size)
-    def startWaiting(self,message):
-        self.threadWaiting=Thread(target=self.waiting,args=(message,))
-        self.threadWaiting.start()
     def getIsWaiting(self):
         return self.isWaiting
     def setIsWaiting(self,value):
         self.isWaiting = value
-    def waiting(self,message):
-        current_datetime = datetime.datetime.now()
-        self.isWaiting = True
-        wait=True
-        while wait:
-            self.lblStatusAction.config(text=message+'.'*((datetime.datetime.now()-current_datetime).seconds%3+1))
-            time.sleep(0.25)
-            wait=self.getIsWaiting()
-        self.lblStatusAction.config(text="")
     def getDataFromBackend(self):
         try:
             response=self.handleErrorRepsonse(self.service.getByFilter())
             if response[0]:
-                self.myTable.addRows(response[1]['message'])
+                for i in range(len(response[1]['message'])):
+                    if response[1]['message'][i]['isDeleted']==False:
+                        self.myTable.addRow(response[1]['message'][i])
         except Exception as e:
             print(e)
             # print(response)
@@ -60,7 +50,7 @@ class BaseManagementFrame(Frame):
         self.addDataDialog(self.mainScreen,self).run()
     def handleErrorRepsonse(self,response):
         if response['status_code']==403:
-            messagebox.showerror("Lỗi xác thực","Xác thưc hết hạn! Vui lòng đăng nhập lại")
+            messagebox.showerror("Lỗi xác thực","Xác thực hết hạn! Vui lòng đăng nhập lại")
             self.master.goBackLogin()
             return False,''
         return True,response
@@ -70,14 +60,19 @@ class BaseManagementFrame(Frame):
     def btnEditAction(self):
         selected=self.myTable.getSelectedItem(mode='MAP')
         self.editDataDialog(self.mainScreen,self,selected).run()
-    def btnDeleteAction(self):
+    def btnDeletedAction(self):
+        _myThread().newThread(function=self.deletedActionThread,message='Đang xóa',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
+    def deletedActionThread(self):
         selected=self.myTable.getSelectedItem(mode='MAP')
         name=selected[self.model.getColumnID()[1]]
         res=messagebox.askquestion('Xóa', f'Bạn có chắc chắn muốn xóa "{name}" không?')
         if res == 'yes' :
-            if self.service.delete(selected[self.model.getColumnID()[0]])[0]=='Deleted':
-                self.refreshData()
+            response= self.service.delete(selected[self.model.getColumnID()[0]])
+            print(response)
+            if response['status_code']==201:
                 messagebox.showinfo('Thành công',"Xóa thành công!")
+                self.refreshData()
+            self.isWaiting=False
         else:
             pass
     def searchActionThread(self):
@@ -93,7 +88,6 @@ class BaseManagementFrame(Frame):
         _myThread().newThread(function=self.searchActionThread,message='Đang tìm kiếm',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
     def refreshData(self):
         self.myTable.removeAllData()
-
         _myThread().newThread(function=self.getDataFromBackend,labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
 
     def btnRefreshAction(self):
@@ -103,7 +97,7 @@ class BaseManagementFrame(Frame):
     def setupCtrlDefault(self,modelName=""):
         self.btnAdd=Button(self.ctrlFrame,text=f"Thêm {modelName}",command=self.btnAddAction)
         self.btnEdit=Button(self.ctrlFrame,text=f'Chỉnh sửa {modelName}',command=self.btnEditAction)
-        self.btnRemove=Button(self.ctrlFrame,text=f'Xóa {modelName}',command=self.btnDeleteAction)
+        self.btnRemove=Button(self.ctrlFrame,text=f'Xóa {modelName}',command=self.btnDeletedAction)
         self.btnRefreshData=Button(self.ctrlFrame,text=f'Tải dữ liệu mẫu',command=self.btnRefreshAction)
         self.lblSearch=Label(self.ctrlFrame,text="Tìm kiếm")
         self.typeSearch=Combobox(self.ctrlFrame,values=self.model.getColumnShow(),state='readonly')

@@ -1,12 +1,16 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
+from ....myLib.myTkinterThreading import MyTkinterThreading
 _fontLbl=('Arial',13)
+_fontTitle=('Arial',15,'bold')
+_myThread=MyTkinterThreading
+_statusActionFont=('Arial',12)
 class BaseAddDialog(Toplevel):
     def __init__(self,tkMaster,master,title='Xin chào',data=None,model=None,service=None):
         Toplevel.__init__(self)
         self.tkMaster=tkMaster
-        self.tilte=title
+        self.title=title
         self.master=master
         self.protocol('WM_DELETE_WINDOW', self.doSomething)
         self.model=model
@@ -28,10 +32,16 @@ class BaseAddDialog(Toplevel):
     #         temp['title']=self.model.getColumnShowByID(i)
     #         self.widgets[i]=temp
     #         print(temp)
+    def getIsWaiting(self):
+        return self.isWaiting
+    def setIsWaiting(self,value):
+        self.isWaiting = value
     def setupWidget(self):
         defaultValue={'isOptional':False, 'isID':False,'isReadOnly':False,'width':50,'padx':5,'pady':5}
-        row=0
-
+        Label(self,text=self.title,font=_fontTitle).grid(columnspan=2)
+        self.lblStatusAction=Label(self,font=_statusActionFont)
+        self.lblStatusAction.grid(columnspan=2)
+        row=2
         for i in self.dictInfoWidget.keys():
             column=0
             w=self.dictInfoWidget[i]
@@ -43,7 +53,7 @@ class BaseAddDialog(Toplevel):
                 title=title+" (optional)"
             else:
                 title=title+" *"
-            Label(self,text=title,font=_fontLbl).grid(row=row,column=column,sticky='E',padx=w['padx'],pady=w['pady'])
+            Label(self,text=title,font=_fontLbl).grid(row=row,column=column,sticky='e',padx=w['padx'],pady=w['pady'])
             column=column+1
             
             w['type']=w['type'](self,font=_fontLbl,width=50)
@@ -63,7 +73,7 @@ class BaseAddDialog(Toplevel):
                 w['type'].config(state='readonly')
             if w['isID']:
                 w['type'].config(state='disabled')
-            w['type'].grid(row=row,column=column,sticky='W',padx=w['padx'],pady=w['pady'])
+            w['type'].grid(row=row,column=column,sticky='w',padx=w['padx'],pady=w['pady'])
             row+=1
         self.btnSubmit=Button(self,text='Submit',command=self.btnSubmitAction)
         self.btnSubmit.grid(row=row,column=1)
@@ -80,6 +90,8 @@ class BaseAddDialog(Toplevel):
                     temp[i]=False
         return temp
     def btnSubmitAction(self):
+        _myThread().newThread(function=self.submitActionThread,message='Đang thực hiện',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
+    def submitActionThread(self):
         category=self.getDataOfForm()
         response=self.service.create(category)
         if response['status_code']==403:
@@ -90,6 +102,7 @@ class BaseAddDialog(Toplevel):
             messagebox.showinfo("Thành công","Thêm thành công!")
         else:
             messagebox.showerror("Lỗi","Định dạng dữ liệu không phù hợp")
+        self.isWaiting=False
     def doSomething(self):
         self.destroy()
         self.tkMaster.comeback()

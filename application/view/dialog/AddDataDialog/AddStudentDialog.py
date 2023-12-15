@@ -16,7 +16,7 @@ today = str(date.today())
 
 _typePersonService=TypePersonalIDService()
 class AddStudentDialog(BaseAddDialog):
-    def __init__(self,tkMaster,master,title='Xin chào',data=None,model=StudentModel,service=StudentService):
+    def __init__(self,tkMaster,master,title='Thêm học viên',data=None,model=StudentModel,service=StudentService):
         super().__init__(tkMaster,master,title,data,model,service)
         typePersonal=_typePersonService.getAll()['message']
         typePersonalValue=[]
@@ -48,17 +48,9 @@ class AddStudentDialog(BaseAddDialog):
             'typeData':StringVar(),
             'values':today,
             'isReadOnly':True
-        },
-        'isDeleted':{
-            'type':Combobox,
-            'typeData':BooleanVar(),
-            'values':[False,True],
-            'currentChoice':0,
-            'isReadOnly':True,
-            'width':10
         }
         }
-    def btnSubmitAction(self):
+    def submitActionThread(self):
         student=self.getDataOfForm()
         del student['datetimeInit']
         response=self.service.create(student)

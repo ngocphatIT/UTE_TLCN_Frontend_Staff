@@ -5,7 +5,7 @@ from tkinter import messagebox
 from tkinter.ttk import *
 _service=ClassService()
 class EditClassDialog(AddClassDialog):
-    def __init__(self,tkMaster,master,data,title='Xin chào'):
+    def __init__(self,tkMaster,master,data,title='Chỉnh sửa thông tin lớp học'):
         super().__init__(tkMaster,master,title,data)
         self.data=data
         self.dictInfoWidget['cid']['isID']=True

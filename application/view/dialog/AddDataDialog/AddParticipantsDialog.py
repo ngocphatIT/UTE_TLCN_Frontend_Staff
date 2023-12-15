@@ -15,7 +15,7 @@ from datetime import date
 today = str(date.today())
 
 class AddParticipantsDialog(BaseAddDialog):
-    def __init__(self,tkMaster,master,title='Xin chào',data=None,model=ParticipantsClassModel,service=ClassService,classID=''):
+    def __init__(self,tkMaster,master,title='Thêm thành viên lớp học',data=None,model=ParticipantsClassModel,service=ClassService,classID=''):
         self.classID=classID
         super().__init__(tkMaster,master,title,data,model,service)
         
@@ -35,7 +35,7 @@ class AddParticipantsDialog(BaseAddDialog):
             'width':20
         }
         }
-    def btnSubmitAction(self):
+    def submitActionThread(self):
         obj=self.getDataOfForm()
         print(obj)
         response=self.service.addParticipants(self.classID,obj)

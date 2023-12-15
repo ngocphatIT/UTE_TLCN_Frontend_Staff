@@ -5,7 +5,7 @@ from tkinter import messagebox
 from tkinter.ttk import *
 _service=LecturerService()
 class EditLecturerDialog(AddLecturerDialog):
-    def __init__(self,tkMaster,master,data,title='Xin chào'):
+    def __init__(self,tkMaster,master,data,title='Chỉnh sửa thông tin giảng viên'):
         super().__init__(tkMaster,master,title,data)
         self.data=data
         self.dictInfoWidget['lid']['isReadOnly']=True
@@ -30,7 +30,7 @@ class EditLecturerDialog(AddLecturerDialog):
                                 break
                         if index!=-1:
                             self.dictInfoWidget[i]['currentChoice']=index
-    def btnSubmitAction(self):
+    def submitActionThread(self):
         myClass=self.getDataOfForm()
         myClass['typePersonID']=myClass['typePersonID'].split(' - ')[1]
         response=_service.update(myClass['lid'],myClass)

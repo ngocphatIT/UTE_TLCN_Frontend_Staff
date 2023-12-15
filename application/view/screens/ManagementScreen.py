@@ -28,20 +28,20 @@ class ManagementScreen(Frame):
         myProfile.add_command(label="Đăng xuất",font=_fontMenuSub,command=self.logout)
 
         # myProfile.add_command(label="Delete Teacher")
-        menubar.add_cascade(label="My Profile",font=_fontMenuHeader, menu=myProfile)
+        menubar.add_cascade(label="Tôi",font=_fontMenuHeader, menu=myProfile)
 
         groupClass = Menu(menubar, tearoff=0)
         groupClass.add_command(label="Quản lý loại khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý loại khóa học"))
         groupClass.add_command(label="Quản lý khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý khóa học"))
         groupClass.add_command(label="Quản lý lớp học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
-        menubar.add_cascade(label="Group Quản lý lớp học",font=_fontMenuHeader,menu=groupClass)
+        menubar.add_cascade(label="Nhóm lớp học",font=_fontMenuHeader,menu=groupClass)
 
         # Create the Quản lý học viên menu
         groupUser = Menu(menubar, tearoff=0)
         groupUser.add_command(label="Quản lý học viên",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý học viên"))
         groupUser.add_command(label="Quản lý giảng viên",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý giảng viên"))
         groupUser.add_command(label="Quản lý tài khoản",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý tài khoản"))
-        menubar.add_cascade(label="User Management",font=_fontMenuHeader, menu=groupUser)
+        menubar.add_cascade(label="Nhóm người dùng",font=_fontMenuHeader, menu=groupUser)
         self.master.config(menu=menubar)
         # self.showFrame()
     def getFrame(self,frame):

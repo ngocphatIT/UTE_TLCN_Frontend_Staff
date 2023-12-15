@@ -5,7 +5,7 @@ from tkinter import messagebox
 from tkinter.ttk import *
 _service=AccountService()
 class EditAccountDialog(AddAccountDialog):
-    def __init__(self,tkMaster,master,data,title='Xin chào'):
+    def __init__(self,tkMaster,master,data,title='Chỉnh sửa thông tin tài khoản'):
         super().__init__(tkMaster,master,title,data)
         self.data=data
         self.dictInfoWidget['uuid']['isID']=True
@@ -33,7 +33,7 @@ class EditAccountDialog(AddAccountDialog):
                         if index!=-1:
                             self.dictInfoWidget[i]['currentChoice']=index
                 
-    def btnSubmitAction(self):
+    def submitActionThread(self):
         myAccount=self.getDataOfForm()
         myAccount['role']=myAccount['role'].split(' - ')[1]
         response= _service.update(myAccount['uuid'],myAccount)

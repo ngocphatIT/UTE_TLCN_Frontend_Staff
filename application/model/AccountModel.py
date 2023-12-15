@@ -7,10 +7,10 @@ class AccountModel:
         self.isDeleted = isDeleted
         self.role=role
     def getColumnID(self):
-        return ['uuid','username','email','role','datetimeInit','isDeleted']
+        return ['uuid','username','email','role','datetimeInit']
     def getColumnShow(self):
-        return ['Mã tài khoản','Tên đăng nhập','Email','Quyền tài khoản','Ngày tạo','Đã xóa']
+        return ['Mã tài khoản','Tên đăng nhập','Email','Quyền tài khoản','Ngày tạo']
     def getColumnShowByID(self,id):
         return self.getColumnShow()[self.getColumnID().index(id)]
     def convertToJson(self):
-        return {'uuid':self.uuid,'username':self.username,'passwordHash':self.passwordHash,'datetimeInit':self.datetimeInit,'isDeleted':self.isDeleted,'role':self.role}
+        return {'uuid':self.uuid,'username':self.username,'passwordHash':self.passwordHash,'datetimeInit':self.datetimeInit,'role':self.role}

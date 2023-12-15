@@ -8,9 +8,9 @@ class StudentModel:
         self.datetimeInit=datetimeInit
         self.isDeleted=isDeleted
     def getColumnID(self):
-        return ['stid', 'name','account','personID','typePersonID','datetimeInit','isDeleted']
+        return ['stid', 'name','account','personID','typePersonID','datetimeInit']
     def getColumnShow(self):
-        return ['Mã học viên','Tên','Tài khoản đăng nhập','Mã số định danh','Loại định danh','Ngày tạo','Đã xóa']
+        return ['Mã học viên','Tên','Tài khoản đăng nhập','Mã số định danh','Loại định danh','Ngày tạo']
     def getColumnShowByID(self,id):
         return self.getColumnShow()[self.getColumnID().index(id)]
     def convertToJson(self):

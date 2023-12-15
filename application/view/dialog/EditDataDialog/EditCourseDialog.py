@@ -5,7 +5,7 @@ from tkinter import messagebox
 from tkinter.ttk import *
 _service=CourseService()
 class EditCourseDialog(AddCourseDialog):
-    def __init__(self,tkMaster,master,data,title='Xin chào'):
+    def __init__(self,tkMaster,master,data,title='Chỉnh sửa thông tin khóa học'):
         super().__init__(tkMaster,master,title,data)
         self.data=data
         self.dictInfoWidget['cid']['isID']=True
@@ -20,7 +20,7 @@ class EditCourseDialog(AddCourseDialog):
                     elif data[i]=='False':
                         data[i] = False
                     self.dictInfoWidget[i]['currentChoice']=self.dictInfoWidget[i]['values'].index(data[i])
-    def btnSubmitAction(self):
+    def submitActionThread(self):
         category=self.getDataOfForm()
         response=_service.update(category['cid'],category) 
         if response['status_code']==403:

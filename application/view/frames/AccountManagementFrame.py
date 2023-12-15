@@ -13,7 +13,7 @@ class AccountManagementFrame(BaseManagementFrame):
         self.setupCtrlDefault()
         self.packCtrlDefault()
         self.btnAdd.config(state='disabled')
-    def btnDeleteAction(self):
+    def deletedActionThread(self):
         selected=self.myTable.getSelectedItem(mode='MAP')
         options=['Xóa tài khoản','Xóa quyền']
         if selected:

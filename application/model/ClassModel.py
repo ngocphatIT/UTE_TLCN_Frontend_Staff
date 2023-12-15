@@ -9,10 +9,10 @@ class ClassModel:
         self.course=course
         self.isDeleted=isDeleted
     def getColumnID(self):
-        return ['cid','className','description','dateStart','dateEnd','course','isDeleted']
+        return ['cid','className','description','dateStart','dateEnd','course']
     def getColumnShow(self):
-        return ['Mã lớp học','Tên','Mô tả','Ngày bắt đầu','Ngày kết thúc','Khóa học','Đã xóa']
+        return ['Mã lớp học','Tên','Mô tả','Ngày bắt đầu','Ngày kết thúc','Khóa học']
     def getColumnShowByID(self,id):
         return self.getColumnShow()[self.getColumnID().index(id)]
     def convertToJson(self):
-        return {'cid': self.cid,'className': self.className,'description': self.description,'course':self.course,'datetimeStart':datetime.fromisoformat(self.datetimeStart.isoformat()),'datetimeEnd':datetime.fromisoformat(self.datetimeEnd.isoformat()),'isDeleted':self.isDeleted}
+        return {'cid': self.cid,'className': self.className,'description': self.description,'course':self.course,'datetimeStart':datetime.fromisoformat(self.datetimeStart.isoformat()),'datetimeEnd':datetime.fromisoformat(self.datetimeEnd.isoformat())}

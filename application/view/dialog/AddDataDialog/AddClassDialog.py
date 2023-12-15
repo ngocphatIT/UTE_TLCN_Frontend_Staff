@@ -14,7 +14,7 @@ today = str(date.today())
 _service=ClassService()
 _courseService=CourseService()
 class AddClassDialog(BaseAddDialog):
-    def __init__(self,tkMaster,master,title='Xin chào',data=None,model=ClassModel,service=ClassService):
+    def __init__(self,tkMaster,master,title='Thêm lớp',data=None,model=ClassModel,service=ClassService):
         super().__init__(tkMaster,master,title,data,model,service)
         course=_courseService.getAll()['message']
         courseValue=[]
@@ -57,16 +57,8 @@ class AddClassDialog(BaseAddDialog):
         'description':{
             'type':Entry,
             'typeData':StringVar(),
-        },
-        'isDeleted':{
-            'type':Combobox,
-            'typeData':BooleanVar(),
-            'values':[False,True],
-            'currentChoice':0,
-            'isReadOnly':True,
-            'width':10
         }}
-    def btnSubmitAction(self):
+    def submitActionThread(self):
         myClass=self.getDataOfForm()
         myClass['course']=myClass['course'].split(' - ')[1]
         print(myClass)

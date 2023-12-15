@@ -7,7 +7,7 @@ from ....service.CourseCategoryService import CourseCategoryService
 
 _service = CourseCategoryService()
 class AddCourseCategoryDialog(BaseAddDialog):
-    def __init__(self,tkMaster,master,title='Xin chào',data=None,model=CourseCategoryModel,service=CourseCategoryService):
+    def __init__(self,tkMaster,master,title='Thêm loại khóa học',data=None,model=CourseCategoryModel,service=CourseCategoryService):
         super().__init__(tkMaster,master,title,data,model,service)
         self.dictInfoWidget = {'cid':{
             'type':Entry,
@@ -17,14 +17,6 @@ class AddCourseCategoryDialog(BaseAddDialog):
         'nameCategory':{
             'type':Entry,
             'typeData':StringVar(),
-        },
-        'isDeleted':{
-            'type':Combobox,
-            'typeData':BooleanVar(),
-            'values':[False,True],
-            'currentChoice':0,
-            'isReadOnly':True,
-            'width':10
         },
         'description':{
             'type':Entry,

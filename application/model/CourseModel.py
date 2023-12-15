@@ -6,10 +6,10 @@ class CourseModel:
         self.category=category
         self.isDeleted=isDeleted
     def getColumnID(self):
-        return ['cid', 'courseName', 'description', 'category','isDeleted']
+        return ['cid', 'courseName', 'description', 'category']
     def getColumnShow(self):
-        return ['Mã khóa học','Tên khóa học','Mô tả','Loại khóa học','Đã xóa']
+        return ['Mã khóa học','Tên khóa học','Mô tả','Loại khóa học']
     def getColumnShowByID(self,id):
         return self.getColumnShow()[self.getColumnID().index(id)]
     def convertToJson(self):
-        return {'cid':self.cid,'courseName':self.courseName,'category':self.category,'description':self.description,'isDeleted':self.isDeleted}
+        return {'cid':self.cid,'courseName':self.courseName,'category':self.category,'description':self.description}

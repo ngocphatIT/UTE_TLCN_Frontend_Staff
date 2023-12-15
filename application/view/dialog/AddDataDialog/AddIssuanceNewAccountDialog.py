@@ -9,7 +9,7 @@ from datetime import date
 
 today = str(date.today())
 class AddIssuanceNewAccountDialog(BaseAddDialog):
-    def __init__(self,tkMaster,master,title='Xin chào',data=None,model=IssuanceNewAccountModel,service=AccountService,role='STUDENT'):
+    def __init__(self,tkMaster,master,title='Cấp tài khoản',data=None,model=IssuanceNewAccountModel,service=AccountService,role='STUDENT'):
         super().__init__(tkMaster,master,title,data,model,service)
         self.dictInfoWidget = {'id':{
             'type':Entry,
@@ -43,7 +43,7 @@ class AddIssuanceNewAccountDialog(BaseAddDialog):
         }
         }
 
-    def btnSubmitAction(self):
+    def submitActionThread(self):
         values=self.getDataOfForm()
         print(self.service.inssuanceNewAccount('student',values))
 

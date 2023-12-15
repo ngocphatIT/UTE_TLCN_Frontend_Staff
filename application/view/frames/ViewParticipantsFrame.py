@@ -25,7 +25,7 @@ class ViewParticipantsFrame(BaseManagementFrame):
                 self.myTable.addRows(response[1]['message'])
         except Exception as e:
             print(e)
-    def btnDeleteAction(self):
+    def deletedActionThread(self):
         selected=self.myTable.getSelectedItem(mode='MAP')
         res=messagebox.askquestion('Xóa', f'''Bạn có chắc chắn muốn xóa {selected['role']} "{selected['name']}" không?''')
         del selected['accountID']
