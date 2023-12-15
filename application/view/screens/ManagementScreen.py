@@ -8,50 +8,53 @@ from ..frames.StudentManagementFrame import StudentManagementFrame
 from ..frames.LecturerManagementFrame import LecturerManagementFrame
 from ..frames.AccountManagementFrame import AccountManagementFrame
 from ..frames.ViewParticipantsFrame import ViewParticipantsFrame
+from ..frames.MyProfileFrame import MyProfileFrame
 from ...service.AccountService import AccountService
 _accountService=AccountService
+_fontMenuHeader=('Arial',12)
+_fontMenuSub=('Arial',11)
 class ManagementScreen(Frame):
     def __init__(self,master):
         Frame.__init__(self)
         self.currentFrame = None
         self.lastFrame = None
         self.master = master
-        self.master.title("Student Management System")
+        self.master.title("Management System")
         menubar=Menu(self)
         # Create the Teacher Management menu
         myProfile = Menu(menubar, tearoff=0)
-        myProfile.add_command(label="My profile")
-        myProfile.add_command(label="Đăng xuất",command=self.logout )
+        myProfile.add_command(label="Thông tin của tôi",font=_fontMenuSub,command=lambda: self.showFrame("Thông tin của tôi"))
+        myProfile.add_command(label="Đổi mật khẩu",font=_fontMenuSub,command=self.changePassword)
+        myProfile.add_command(label="Đăng xuất",font=_fontMenuSub,command=self.logout)
 
         # myProfile.add_command(label="Delete Teacher")
-        menubar.add_cascade(label="My Profile", menu=myProfile)
+        menubar.add_cascade(label="My Profile",font=_fontMenuHeader, menu=myProfile)
 
         groupClass = Menu(menubar, tearoff=0)
-        groupClass.add_command(label="Course Category Management",command=lambda: self.showFrame("Course Category Management"))
-        groupClass.add_command(label="Course Management",command=lambda: self.showFrame("Course Management"))
-        groupClass.add_command(label="Class Management",command=lambda: self.showFrame("Class Management"))
-        menubar.add_cascade(label="Group Class Management", menu=groupClass)
+        groupClass.add_command(label="Quản lý loại khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý loại khóa học"))
+        groupClass.add_command(label="Quản lý khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý khóa học"))
+        groupClass.add_command(label="Quản lý lớp học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
+        menubar.add_cascade(label="Group Quản lý lớp học",font=_fontMenuHeader,menu=groupClass)
 
-        # Create the Student Management menu
+        # Create the Quản lý học viên menu
         groupUser = Menu(menubar, tearoff=0)
-        groupUser.add_command(label="Student Management",command=lambda: self.showFrame("Student Management"))
-        groupUser.add_command(label="Lecturer Management",command=lambda: self.showFrame("Lecturer Management"))
-        groupUser.add_command(label="Account Management",command=lambda: self.showFrame("Account Management"))
-        menubar.add_cascade(label="User Management", menu=groupUser)
+        groupUser.add_command(label="Quản lý học viên",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý học viên"))
+        groupUser.add_command(label="Quản lý giảng viên",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý giảng viên"))
+        groupUser.add_command(label="Quản lý tài khoản",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý tài khoản"))
+        menubar.add_cascade(label="User Management",font=_fontMenuHeader, menu=groupUser)
         self.master.config(menu=menubar)
         # self.showFrame()
     def getFrame(self,frame):
         dictFrame={
             # 'Student Management':StudentManagementFrame
-            'Course Category Management':CourseCategoryManagementFrame,
-            'Course Management':CourseManagementFrame,
-            'Class Management':ClassManagementFrame,
-            'Student Management':StudentManagementFrame,
-            'Lecturer Management':LecturerManagementFrame,
-            'Account Management':AccountManagementFrame,
-            'View Participants':ViewParticipantsFrame
-            
-            
+            'Quản lý loại khóa học':CourseCategoryManagementFrame,
+            'Quản lý khóa học':CourseManagementFrame,
+            'Quản lý lớp học':ClassManagementFrame,
+            'Quản lý học viên':StudentManagementFrame,
+            'Quản lý giảng viên':LecturerManagementFrame,
+            'Quản lý tài khoản':AccountManagementFrame,
+            'Quản lý thành viên lớp học':ViewParticipantsFrame,
+            'Thông tin của tôi':MyProfileFrame
         }
         return dictFrame[frame](self)
     def showViewParticipants(self,classID,className):
@@ -68,6 +71,10 @@ class ManagementScreen(Frame):
             self.lastFrame.pack_forget()
         self.currentFrame.packFrame()
         self.currentFrame.tkraise()
+    def changePassword(self):
+        self.master.goToChangePassword(isLogin=True)
+
+        
     def logout(self):
         res=messagebox.askquestion('Xóa', f'Bạn có chắc chắn muốn đăng xuất không?')
         if res=='yes':
@@ -85,7 +92,7 @@ class ManagementScreen(Frame):
         # student_frame = Frame(self)
         # teacher_frame = Frame(self)
 
-        # # Initially, display the Class Management frame
+        # # Initially, display the Quản lý lớp học frame
         # class_frame.pack()
         
 
@@ -99,8 +106,8 @@ class ManagementScreen(Frame):
         # account_tab = ttk.Frame(notebook)
         # student_tab = StudentManagementFrame(notebook)
         # student_tab.runDemo()
-        # notebook.add(student_tab, text="Student Management")
-        # notebook.add(lecturer_tab, text="Lecturer Management")
-        # notebook.add(account_tab, text="Account Management")
+        # notebook.add(student_tab, text="Quản lý học viên")
+        # notebook.add(lecturer_tab, text="Quản lý giảng viên")
+        # notebook.add(account_tab, text="Quản lý tài khoản")
         # notebook.pack(fill="both", expand=True)
         # student_tab.packData({'fill':"both", 'expand':True})

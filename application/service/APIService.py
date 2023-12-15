@@ -4,7 +4,7 @@ from tkinter import messagebox
 import json
 from ..service.SQLLiteService import SessionDataService
 _session = SessionDataService
-headers={'Authorization':SessionDataService().getAuthorization()}#{'Authorization':'eyJhbGciOiAiU0hBMjU2IiwgInR5cCI6ICJKV1QifQ==.eyJleHAiOiAiMjAyMy0xMi0wOCAwMToxMDoxOCIsICJpYXQiOiAiMjAyMy0xMi0wNyAxMzoxMDoxOCIsICJzdWIiOiA5OTkyNDg1MjksICJyb2xlIjogIkFETUlOIiwgIm9iamVjdCI6IHt9fQ==.81456ee50f0aa12e0d29bd9335c2f4d917fdbf47d4a04cc3905cd2551707c0f5'}
+#{'Authorization':'eyJhbGciOiAiU0hBMjU2IiwgInR5cCI6ICJKV1QifQ==.eyJleHAiOiAiMjAyMy0xMi0wOCAwMToxMDoxOCIsICJpYXQiOiAiMjAyMy0xMi0wNyAxMzoxMDoxOCIsICJzdWIiOiA5OTkyNDg1MjksICJyb2xlIjogIkFETUlOIiwgIm9iamVjdCI6IHt9fQ==.81456ee50f0aa12e0d29bd9335c2f4d917fdbf47d4a04cc3905cd2551707c0f5'}
 class APIService:
     def __init__(self):
         # from ..config import myConfig
@@ -32,6 +32,7 @@ class APIService:
         my_json = response.content.decode('utf8')
         return json.loads(my_json)
     def sendRequest(self, request, data={}, method="GET"):
+        headers={'Authorization':_session().getAuthorization()}
         try:
             if method == "GET":
                 response=requests.get(self.backendURL + request,headers=headers)
@@ -48,6 +49,7 @@ class APIService:
                 messagebox.showerror('Lỗi kết nối','Mất kết nối với server')
     def logout(self):
         try:
+            headers={'Authorization':_session().getAuthorization()}
             response=requests.get(self.backendURL + '/api/auth/logout/'+_session().getAuthorization(),headers=headers)
             return {'message':'','status_code':response.status_code}
         except Exception as e:

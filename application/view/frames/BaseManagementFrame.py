@@ -2,15 +2,22 @@ from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 from ...myLib.DataGridView import DataGridView
-# _tagH1=('Arial',15)
-# _tagP=('Arial',13)
+from ...myLib.myTkinterThreading import MyTkinterThreading
+from threading import Thread
+import datetime
+import time
+_titleFont=('Arial',14,'bold')
+_buttonFont=('Arial',14)
+_statusActionFont=('Arial',12)
+_myThread=MyTkinterThreading
+
 class BaseManagementFrame(Frame):
-    def __init__(self,master,mainScreen,model,service,addDataDialog,editDataDialog,title):
+    def __init__(self,master,mainScreen,model,service,addDataDialog,editDataDialog,title,size=(1440,720)):
         Frame.__init__(self)
         if mainScreen is None:
             mainScreen = master.master
         self.master = master
-        self.lblTitle=Label(self,text=title)
+        self.lblTitle=Label(self,text=title,font=_titleFont)
         self.ctrlFrame=Frame(self)
         self.model=model()
         self.myTable=DataGridView(self,IDColumns=['STT']+self.model.getColumnID(),showColumns=['STT']+self.model.getColumnShow(), show="headings",height=30)
@@ -19,8 +26,24 @@ class BaseManagementFrame(Frame):
         self.editDataDialog=editDataDialog
         self.service=service()
         self.mainScreen=mainScreen
-
-    
+        if size is not None:
+            self.mainScreen.changeSize(size)
+    def startWaiting(self,message):
+        self.threadWaiting=Thread(target=self.waiting,args=(message,))
+        self.threadWaiting.start()
+    def getIsWaiting(self):
+        return self.isWaiting
+    def setIsWaiting(self,value):
+        self.isWaiting = value
+    def waiting(self,message):
+        current_datetime = datetime.datetime.now()
+        self.isWaiting = True
+        wait=True
+        while wait:
+            self.lblStatusAction.config(text=message+'.'*((datetime.datetime.now()-current_datetime).seconds%3+1))
+            time.sleep(0.25)
+            wait=self.getIsWaiting()
+        self.lblStatusAction.config(text="")
     def getDataFromBackend(self):
         try:
             response=self.handleErrorRepsonse(self.service.getByFilter())
@@ -29,6 +52,7 @@ class BaseManagementFrame(Frame):
         except Exception as e:
             print(e)
             # print(response)
+        self.isWaiting=False
     def addModel(self,model):
         self.myTable.addRow(model)
     def btnAddAction(self):
@@ -56,19 +80,22 @@ class BaseManagementFrame(Frame):
                 messagebox.showinfo('Thành công',"Xóa thành công!")
         else:
             pass
-    def btnSearchAction(self):
-        self.myTable.removeAllData()
+    def searchActionThread(self):
         try:
             response=self.handleErrorRepsonse(self.service.getByFilter({self.myTable.convertShowColumnToIDColumn(self.typeSearch.get()):self.entrySearch.get()}))
             if response[0]:
+                self.myTable.removeAllData()
                 self.myTable.addRows(response[1]['message'])
         except Exception as e:
             print(e)
             print(response)
-        
+    def btnSearchAction(self):
+        _myThread().newThread(function=self.searchActionThread,message='Đang tìm kiếm',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
     def refreshData(self):
         self.myTable.removeAllData()
-        self.getDataFromBackend()
+
+        _myThread().newThread(function=self.getDataFromBackend,labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
+
     def btnRefreshAction(self):
         self.refreshData()
     def setupTitle(self,title="Chào mừng"):
@@ -84,6 +111,7 @@ class BaseManagementFrame(Frame):
         self.searchValue=StringVar()
         self.entrySearch=Entry(self.ctrlFrame,textvariable=self.searchValue)
         self.btnSearch=Button(self.ctrlFrame,text="Tìm kiếm",command=self.btnSearchAction)
+        self.lblStatusAction=Label(self,font=_statusActionFont)
     def packCtrlDefault(self):
         self.btnAdd.grid(row=0,column=0,padx=10)
         self.btnEdit.grid(row=0,column=1,padx=10)
@@ -95,6 +123,7 @@ class BaseManagementFrame(Frame):
         self.btnSearch.grid(row=1,column=3,padx=10)
     def packFrame(self):
         self.lblTitle.pack()
+        self.lblStatusAction.pack()
         self.ctrlFrame.pack(pady=10)
         # self.runDemo()
         # self.getDataFromBackend()

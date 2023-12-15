@@ -6,6 +6,7 @@ class SessionDataService:
             self.connect = sqlite3.connect(path)
             self.cursor = self.connect.cursor()
             try:
+                  
                   self.cursor.execute(
                   """CREATE TABLE sessions (
             sid INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,6 +15,7 @@ class SessionDataService:
             isCheckedResponse boolean default False,
             requestSent varchar(500),
             accountActor varchar(500),
+            username varchar(500),
             isTimeout boolean default False
             );
             """
@@ -59,6 +61,17 @@ class SessionDataService:
             return self.execute(
                   f"""UPDATE sessions SET authorization = "{authorization}" WHERE sid = {maxSid};"""
             )
+      def setUsername(self,username):
+            maxSid = self.getMaxSid()
+            return self.execute(
+                  f"""UPDATE sessions SET username = "{username}" WHERE sid = {maxSid};"""
+            )
+      def getUsername(self):
+            maxSid = self.getMaxSid()
+            maxSid = self.query("SELECT MAX(sid) FROM sessions")[0][0]
+            return self.query(
+                  f"SELECT username FROM sessions where sid={maxSid} and isTimeout=False"
+            )[0][0]
 
       def setAccountActor(self, actor):
             maxSid = self.getMaxSid()

@@ -10,7 +10,7 @@ from ...service.StudentService import StudentService
 from ..dialog.ViewDialog.ViewClassParticipantsDialog import ViewParticipantsDialog
 _account1=EditIssuanceNewAccountDialog
 class StudentManagementFrame(BaseManagementFrame):
-    def __init__(self,master,mainScreen):
+    def __init__(self,master,mainScreen=None):
         super().__init__(master=master,mainScreen=mainScreen,model=StudentModel,service=StudentService,addDataDialog=AddStudentDialog,editDataDialog=EditStudentDialog,title='Quản lý học viên')
         # self.setupTitle()
         self.setupCtrlDefault()
@@ -22,11 +22,10 @@ class StudentManagementFrame(BaseManagementFrame):
         super().packCtrlDefault()
         self.btnIssuanceAccount.grid(row=2,column=0)
     def issuanceAccount(self):
-        ViewParticipantsDialog(self.master)
-        # selected=self.myTable.getSelectedItem(mode='MAP')
-        # data={'id':selected['stid'],
-        #     'role':'STUDENT',
-        #     'name':selected['name'],
-        #     'currentUsername':selected['account']
-        # }
-        # _account1(self.mainScreen,self,data).run()
+        selected=self.myTable.getSelectedItem(mode='MAP')
+        data={'id':selected['stid'],
+            'role':'STUDENT',
+            'name':selected['name'],
+            'currentUsername':selected['account']
+        }
+        _account1(self.mainScreen,self,data).run()
