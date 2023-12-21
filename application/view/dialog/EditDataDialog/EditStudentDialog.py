@@ -34,6 +34,7 @@ class EditStudentDialog(AddStudentDialog):
         myClass=self.getDataOfForm()
         myClass['typePersonID']=myClass['typePersonID'].split(' - ')[1]
         response=_service.update(myClass['stid'],myClass)
+        self.isWaiting=False
         if response['status_code']==403:
             self.master.error403()
             return
@@ -41,5 +42,6 @@ class EditStudentDialog(AddStudentDialog):
             self.master.refreshData()
             messagebox.showinfo("Thành công","Cập nhật thành công")
         else:
-            messagebox.showerror("Lỗi","Định dạng dữ liệu không phù hợp")
+            messagebox.showerror("Lỗi","Trùng mã định danh")
+        self.isWaiting=False
         

@@ -62,12 +62,13 @@ class AddClassDialog(BaseAddDialog):
         myClass=self.getDataOfForm()
         myClass['course']=myClass['course'].split(' - ')[1]
         print(myClass)
-        response=_service.update(myClass['cid'],myClass)
+        response=_service.create(myClass)
+        self.isWaiting=False
         if response['status_code']==403:
             self.master.error403()
             return
         if response['status_code']==201:
             self.master.refreshData()
-            messagebox.showinfo("Thành công","Cập nhật thành công")
+            messagebox.showinfo("Thành công","Thêm thành công!")
         else:
-            messagebox.showerror("Lỗi","Định dạng dữ liệu không phù hợp")
+            messagebox.showerror("Lỗi","Trùng mã đối tượng")

@@ -34,6 +34,8 @@ class ManagementScreen(Frame):
         groupClass.add_command(label="Quản lý loại khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý loại khóa học"))
         groupClass.add_command(label="Quản lý khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý khóa học"))
         groupClass.add_command(label="Quản lý lớp học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
+        groupClass.add_command(label="Yêu cầu tư vấn khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
+
         menubar.add_cascade(label="Nhóm lớp học",font=_fontMenuHeader,menu=groupClass)
 
         # Create the Quản lý học viên menu
@@ -76,7 +78,7 @@ class ManagementScreen(Frame):
 
         
     def logout(self):
-        res=messagebox.askquestion('Xóa', f'Bạn có chắc chắn muốn đăng xuất không?')
+        res=messagebox.askquestion('Đăng xuất', f'Bạn có chắc chắn muốn đăng xuất không?')
         if res=='yes':
             response=_accountService().logout()
             if response['status_code']==201:

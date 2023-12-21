@@ -12,6 +12,7 @@ class EditClassDialog(AddClassDialog):
     def updateData(self,data):
         for i in data.keys():
             if i in self.dictInfoWidget:
+                print(i,data[i])
                 if not self.dictInfoWidget[i]['type']==Combobox:
                     self.dictInfoWidget[i]['values']=data[i]
                 else:
@@ -29,6 +30,20 @@ class EditClassDialog(AddClassDialog):
                                 break
                         if index!=-1:
                             self.dictInfoWidget[i]['currentChoice']=index
+    def submitActionThread(self):
+        myClass=self.getDataOfForm()
+        myClass['course']=myClass['course'].split(' - ')[1]
+        response=_service.update(myClass['cid'],myClass)
+        self.isWaiting=False
+        self.isWaiting=False
+        if response['status_code']==403:
+            self.master.error403()
+            return
+        if response['status_code']==201:
+            self.master.refreshData()
+            messagebox.showinfo("Thành công","Thêm thành công!")
+        else:
+            messagebox.showerror("Lỗi","Trùng mã đối tượng")
                 
 
         

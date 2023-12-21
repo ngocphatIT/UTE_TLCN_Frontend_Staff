@@ -16,14 +16,16 @@ class MyApp(Tk):
         # self.resizable(0, 0)
         self.display()
     def getScreen(self,name):
-        dictScreen={
-                    'main':ManagementScreen}
+        widget_list = self.winfo_children()
+        for item in widget_list:
+            item.pack_forget()
+        dictScreen={'main':ManagementScreen}
         return dictScreen[name](self)
     def showScreen(self,name):
         self.lastFrame=self.currentFrame
         self.currentFrame=self.getScreen(name)
         if self.lastFrame is not None:
-
+            # self.lastFrame.destroy()
             self.lastFrame.pack_forget()
         self.currentFrame.pack()
         self.currentFrame.tkraise()

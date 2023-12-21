@@ -58,7 +58,16 @@ class ChangePasswordDialog(BaseDialog):
                 self.destroy()
                 self.master.goToLogin()
             else:
-                messagebox.showinfo(self.title,response['message'])
+                dictError={'invalid':'Mật khẩu cũ không chính xác',
+                        'exist': 'Tài khoản không tồn tại'}
+                message="Lỗi hệ thống không xác định!"
+                for i in dictError.keys():
+                    print(i)
+                    if i in response['message']:
+                        message=dictError[i]
+                        break
+                    
+                messagebox.showerror("Thất bại",message)
         except Exception as e:
             print(e)
             print(response)

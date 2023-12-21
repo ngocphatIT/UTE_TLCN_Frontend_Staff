@@ -13,9 +13,10 @@ _roleService = RoleService()
 class AddAccountDialog(BaseAddDialog):
     def __init__(self,tkMaster,master,title='Cấp tài khoản',data=None,model=AccountModel,service=AccountService,role='STUDENT'):
         super().__init__(tkMaster,master,title,data,model,service)
-        role=_roleService.getAll()['message']
+        roles=_roleService.getAll()['message']
+
         roleValues=[]
-        for i in role:
+        for i in roles:
             if not i['isDeleted'] and i['rolename'].upper()!='ADMIN':
                 roleValues.append(f"{i['rolename']} - {i['rid']}")
         self.dictInfoWidget = {'uuid':{

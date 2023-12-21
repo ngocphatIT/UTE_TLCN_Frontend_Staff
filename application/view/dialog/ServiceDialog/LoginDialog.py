@@ -47,9 +47,12 @@ class LoginDialog(BaseDialog):
                 self.destroy()
                 self.master.deiconify()
                 self.master.showScreen('main')
-
             else:
-                messagebox.showinfo(self.title,response['message'])
+                if 'username' in response['message']:
+                    message='Tài khoản hoặc mật khẩu không chính xác!'
+                else:
+                    message="Lỗi hệ thống không xác định!"
+                messagebox.showerror("Thất bại",message)
         except Exception as e:
             print(e)
             print(response)

@@ -37,13 +37,15 @@ class AddParticipantsDialog(BaseAddDialog):
         }
     def submitActionThread(self):
         obj=self.getDataOfForm()
-        print(obj)
         response=self.service.addParticipants(self.classID,obj)
+        self.isWaiting=False
         if response['status_code']==403:
             self.master.error403()
             return
         if response['status_code']==201:
             self.master.refreshData()
             messagebox.showinfo("Thành công","Thêm thành công!")
+        elif response['status_code']==404:
+            messagebox.showerror("Lỗi","Không tìm thấy thành viên")
         else:
-            messagebox.showerror("Lỗi",response['message'])
+            messagebox.showerror("Lỗi","Thành viên đã có trong lớp học")

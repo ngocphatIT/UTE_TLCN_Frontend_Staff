@@ -4,8 +4,6 @@ from tkinter import messagebox
 from ...myLib.DataGridView import DataGridView
 from ...myLib.myTkinterThreading import MyTkinterThreading
 from threading import Thread
-import datetime
-import time
 _titleFont=('Arial',14,'bold')
 _buttonFont=('Arial',14)
 _statusActionFont=('Arial',12)
@@ -53,43 +51,56 @@ class BaseManagementFrame(Frame):
             messagebox.showerror("Lỗi xác thực","Xác thực hết hạn! Vui lòng đăng nhập lại")
             self.master.goBackLogin()
             return False,''
+        elif response['status_code']==404:
+            messagebox.showinfo("Thông báo","Không tìm thấy dữ liệu")
+            return False,''
         return True,response
     def error403(self):
         messagebox.showerror("Lỗi xác thực","Xác thực hết hạn! Vui lòng đăng nhập lại")
         self.master.goToLogin()
     def btnEditAction(self):
         selected=self.myTable.getSelectedItem(mode='MAP')
-        self.editDataDialog(self.mainScreen,self,selected).run()
+        if 'STT' in selected:
+            self.editDataDialog(self.mainScreen,self,selected).run()
+        else:
+            messagebox.showerror("Chỉnh sửa","Chưa chọn đối tượng!")
+        self.isWaiting=False
     def btnDeletedAction(self):
         _myThread().newThread(function=self.deletedActionThread,message='Đang xóa',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
     def deletedActionThread(self):
         selected=self.myTable.getSelectedItem(mode='MAP')
-        name=selected[self.model.getColumnID()[1]]
-        res=messagebox.askquestion('Xóa', f'Bạn có chắc chắn muốn xóa "{name}" không?')
-        if res == 'yes' :
-            response= self.service.delete(selected[self.model.getColumnID()[0]])
-            print(response)
-            if response['status_code']==201:
-                messagebox.showinfo('Thành công',"Xóa thành công!")
-                self.refreshData()
+        try:
+            name=selected[self.model.getColumnID()[1]]
+            res=messagebox.askquestion('Xóa', f'Bạn có chắc chắn muốn xóa "{name}" không?')
+            if res == 'yes' :
+                response= self.service.delete(selected[self.model.getColumnID()[0]])
+                print(response)
+                if response['status_code']==201:
+                    messagebox.showinfo('Thành công',"Xóa thành công!")
+                    self.refreshData()
+                self.isWaiting=False
+        except:
+            messagebox.showerror("Xóa","Chưa chọn đối tượng!")
             self.isWaiting=False
-        else:
-            pass
     def searchActionThread(self):
         try:
             response=self.handleErrorRepsonse(self.service.getByFilter({self.myTable.convertShowColumnToIDColumn(self.typeSearch.get()):self.entrySearch.get()}))
             if response[0]:
                 self.myTable.removeAllData()
                 self.myTable.addRows(response[1]['message'])
+            else:
+                self.myTable.removeAllData()
         except Exception as e:
             print(e)
             print(response)
+        self.isWaiting=False
     def btnSearchAction(self):
-        _myThread().newThread(function=self.searchActionThread,message='Đang tìm kiếm',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
-    def refreshData(self):
+        _myThread().newThread(function=self.searchActionThread,message='Đang tìm kiếm ',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
+    def refreshData(self,isClearSearchValue=True):
+        if isClearSearchValue:
+            self.searchValue.set("")
         self.myTable.removeAllData()
-        _myThread().newThread(function=self.getDataFromBackend,labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
-
+        _myThread().newThread(function=self.getDataFromBackend,message='Đang tải dữ liệu ',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
     def btnRefreshAction(self):
         self.refreshData()
     def setupTitle(self,title="Chào mừng"):
@@ -98,7 +109,7 @@ class BaseManagementFrame(Frame):
         self.btnAdd=Button(self.ctrlFrame,text=f"Thêm {modelName}",command=self.btnAddAction)
         self.btnEdit=Button(self.ctrlFrame,text=f'Chỉnh sửa {modelName}',command=self.btnEditAction)
         self.btnRemove=Button(self.ctrlFrame,text=f'Xóa {modelName}',command=self.btnDeletedAction)
-        self.btnRefreshData=Button(self.ctrlFrame,text=f'Tải dữ liệu mẫu',command=self.btnRefreshAction)
+        self.btnRefreshData=Button(self.ctrlFrame,text=f'Tải dữ liệu',command=self.btnRefreshAction)
         self.lblSearch=Label(self.ctrlFrame,text="Tìm kiếm")
         self.typeSearch=Combobox(self.ctrlFrame,values=self.model.getColumnShow(),state='readonly')
         self.typeSearch.current(0)

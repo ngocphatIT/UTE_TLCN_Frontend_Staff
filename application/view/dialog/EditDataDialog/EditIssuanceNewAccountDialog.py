@@ -5,7 +5,7 @@ from tkinter import messagebox
 from tkinter.ttk import *
 _service=AccountService()
 class EditIssuanceNewAccountDialog(AddIssuanceNewAccountDialog):
-    def __init__(self,tkMaster,master,data,title='Chỉnh sửa thông tin tài khoản'):
+    def __init__(self,tkMaster,master,data,title='Cấp tài khoản'):
         super().__init__(tkMaster,master,title,data)
         self.data=data
     def updateData(self,data):
@@ -33,14 +33,16 @@ class EditIssuanceNewAccountDialog(AddIssuanceNewAccountDialog):
         self.dictInfoWidget['role']['isID']=True
                 
     def submitActionThread(self):
+        dictError={'Account':'Tài khoản đã được sử dụng bởi đối tượng khác!',
+                   'Email':"Email đã được sử dụng bởi đối tượng các!"}
         account=self.getDataOfForm()
         account['role']=account['role'].split(' - ')[1]
-        
         account['id']=int(account['id'])
         if account['currentUsername'] != account['username']:
             del account['name']
             del account['currentUsername']
             response=_service.inssuanceNewAccount(account)
+            self.isWaiting=False
             if response['status_code']==403:
                 self.master.error403()
                 return
@@ -48,7 +50,15 @@ class EditIssuanceNewAccountDialog(AddIssuanceNewAccountDialog):
                     self.master.refreshData()
                     messagebox.showinfo("Thành công","Cấp thành công")
                     return
-            messagebox.showerror("Lỗi",response['message'])
+            elif response['status_code']==200:
+                for i in dictError.keys():
+                    if i in response['message']:
+                        message=dictError[i]
+                        break
+                messagebox.showerror('Lỗi',message)
+            else:
+                messagebox.showerror("Lỗi",response['message'])
             return
         messagebox.showerror("Trùng dữ liệu","Tên đăng nhập mới phải khác tên đăng nhập hiện tại")
+        
         

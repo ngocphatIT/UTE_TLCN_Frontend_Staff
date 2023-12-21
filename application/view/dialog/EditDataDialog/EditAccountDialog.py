@@ -16,7 +16,7 @@ class EditAccountDialog(AddAccountDialog):
         for i in data.keys():
             if i in self.dictInfoWidget:
                 if not self.dictInfoWidget[i]['type']==Combobox:
-                    self.dictInfoWidget[i]['values']=data[i]
+                    self.dictInfoWidget[i]['values']=str(data[i])
                 else:
                     if i == 'isDeleted':
                         if data[i]=='True':
@@ -37,13 +37,16 @@ class EditAccountDialog(AddAccountDialog):
         myAccount=self.getDataOfForm()
         myAccount['role']=myAccount['role'].split(' - ')[1]
         response= _service.update(myAccount['uuid'],myAccount)
-        print(response)
+        self.isWaiting=False
         if response['status_code']==403:
             self.master.error403()
             return
         if response['status_code']==201:
-            self.master.refreshData()
-            messagebox.showinfo("Thành công","Cập nhật thành công")
+                self.master.refreshData()
+                messagebox.showinfo("Thành công","Thay đổi thành công!")
+                return
+        elif response['status_code']==200:
+            messagebox.showerror("Lỗi",'Email đã được sử dụng bởi tài khoản khác')
         else:
-            messagebox.showerror("Lỗi","Định dạng dữ liệu không phù hợp")
+            messagebox.showerror("Lỗi",response['message'])
         

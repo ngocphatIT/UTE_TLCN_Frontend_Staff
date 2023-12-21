@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import messagebox
 from ...dialog.AddDataDialog.BaseAddDialog import BaseAddDialog
 from ....model.CourseModel import CourseModel
 from ....service.CourseService import CourseService
@@ -13,7 +14,7 @@ class AddCourseDialog(BaseAddDialog):
             if 'isDeleted' not in i:
                 i['isDeleted']=False
             if not i['isDeleted']:
-                catValue.append(i['nameCategory'])
+                catValue.append(f"{i['nameCategory']} - {i['cid']}")
         self.dictInfoWidget = {'cid':{
             'type':Entry,
             'typeData':StringVar()
@@ -36,5 +37,16 @@ class AddCourseDialog(BaseAddDialog):
             'typeData':StringVar(),
         },
         }
-
-    
+    def submitActionThread(self):
+        course=self.getDataOfForm()
+        course['category']=course['category'].split(' - ')[1]
+        response=self.service.create(course)
+        if response['status_code']==403:
+            self.master.error403()
+            return
+        self.isWaiting=False
+        if response['status_code']==201:
+            self.master.refreshData()
+            messagebox.showinfo("Thành công","Thêm thành công!")
+        else:
+            messagebox.showerror("Lỗi","Trùng mã đối tượng")

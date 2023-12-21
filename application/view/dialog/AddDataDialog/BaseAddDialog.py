@@ -92,6 +92,7 @@ class BaseAddDialog(Toplevel):
     def btnSubmitAction(self):
         _myThread().newThread(function=self.submitActionThread,message='Đang thực hiện',labelObject=self.lblStatusAction,functionCheckStatus=self.getIsWaiting,functionSetCheck=self.setIsWaiting)
     def submitActionThread(self):
+        self.isWaiting=False
         category=self.getDataOfForm()
         response=self.service.create(category)
         if response['status_code']==403:
@@ -101,8 +102,7 @@ class BaseAddDialog(Toplevel):
             self.master.refreshData()
             messagebox.showinfo("Thành công","Thêm thành công!")
         else:
-            messagebox.showerror("Lỗi","Định dạng dữ liệu không phù hợp")
-        self.isWaiting=False
+            messagebox.showerror("Lỗi","Trùng mã đối tượng")
     def doSomething(self):
         self.destroy()
         self.tkMaster.comeback()

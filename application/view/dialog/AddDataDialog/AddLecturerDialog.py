@@ -53,7 +53,9 @@ class AddLecturerDialog(BaseAddDialog):
     def submitActionThread(self):
         lecturer=self.getDataOfForm()
         del lecturer['datetimeInit']
+        lecturer['typePersonID']=lecturer['typePersonID'].split(' - ')[1]
         response=self.service.create(lecturer)
+        self.isWaiting=False
         if response['status_code']==403:
             self.master.error403()
             return
@@ -61,4 +63,4 @@ class AddLecturerDialog(BaseAddDialog):
             self.master.refreshData()
             messagebox.showinfo("Thành công","Thêm thành công!")
         else:
-            messagebox.showerror("Lỗi","Định dạng dữ liệu không phù hợp")
+            messagebox.showerror("Lỗi","Trùng mã đối tượng")

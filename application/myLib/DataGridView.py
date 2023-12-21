@@ -23,13 +23,12 @@ class DataGridView():
         l = [(self.dataGridView.set(k, col), k) for k in self.dataGridView.get_children('')]
         self.reverseSort=not self.reverseSort
         l.sort(reverse=self.reverseSort)
-
-
-
         # rearrange items in sorted positions
         for index, (val, k) in enumerate(l):
             self.dataGridView.move(k, '', index)
             self.dataGridView.set(k, 0, index+1)
+    def isEmpty(self):
+        return self.dataGridView.get_children()==() 
     def search(self,column,value,mode='SHOW'):
         found=[]
         if mode=='SHOW':
@@ -40,6 +39,7 @@ class DataGridView():
                 found.append(rowValue)
         self.removeAllData()
         self.addRows(found)
+        return not found==[]
         
 
     def mappingIDColumn(self,data):

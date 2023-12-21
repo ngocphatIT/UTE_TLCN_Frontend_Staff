@@ -4,7 +4,7 @@ from tkinter import messagebox
 from ...service.ClassService import ClassService
 from ...model.ParticipantsClassModel import ParticipantsClassModel
 from ..dialog.AddDataDialog.AddParticipantsDialog import AddParticipantsDialog
-from ..dialog.EditDataDialog.EditAccountDialog import EditAccountDialog
+import time
 class ViewParticipantsFrame(BaseManagementFrame):
     def __init__(self,master,mainScreen=None,classID='',className=''):
         self.classID=classID
@@ -25,22 +25,34 @@ class ViewParticipantsFrame(BaseManagementFrame):
                 self.myTable.addRows(response[1]['message'])
         except Exception as e:
             print(e)
+        self.isWaiting=False
     def deletedActionThread(self):
-        selected=self.myTable.getSelectedItem(mode='MAP')
-        res=messagebox.askquestion('Xóa', f'''Bạn có chắc chắn muốn xóa {selected['role']} "{selected['name']}" không?''')
-        del selected['accountID']
-        del selected['name']
-        del selected['STT']
-        if res == 'yes' :
-            print(selected)
-            response=self.service.deleteParticipants(self.classID,selected)
-            if response['status_code']==201:
-                self.refreshData()
-                messagebox.showinfo('Thành công',"Xóa thành công!")
+        try:
+            selected=self.myTable.getSelectedItem(mode='MAP')
+            res=messagebox.askquestion('Xóa', f'''Bạn có chắc chắn muốn xóa {selected['role']} "{selected['name']}" không?''')
+            del selected['accountID']
+            del selected['name']
+            del selected['STT']
+            if res == 'yes' :
+                print(selected)
+                response=self.service.deleteParticipants(self.classID,selected)
+                if response['status_code']==201:
+                    self.refreshData()
+                    messagebox.showinfo('Thành công',"Xóa thành công!")
+                else:
+                    messagebox.showinfo('Thất bại',response['message'])
             else:
-                messagebox.showinfo('Thất bại',response['message'])
-        else:
-            pass
-    def btnSearchAction(self):
-        self.refreshData()
-        self.myTable.search(self.typeSearch.get(),self.entrySearch.get())
+                pass
+        except:
+            messagebox.showerror("Xóa","Chưa chọn đối tượng!")
+        self.isWaiting = False
+    def searchActionThread(self):
+        self.refreshData(isClearSearchValue=False)
+        start_time = time.time()
+        while self.myTable.isEmpty():
+            print(self.myTable.dataGridView.get_children())
+            if time.time()-start_time>=5:
+                break
+        if not self.myTable.search(self.typeSearch.get(),self.entrySearch.get()):
+            messagebox.showinfo('Không tìm thấy',f'Không tìm thấy!')
+

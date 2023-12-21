@@ -23,6 +23,7 @@ class EditCourseCatoryDialog(AddCourseCategoryDialog):
     def submitActionThread(self):
         category=self.getDataOfForm()
         response= _service.update(category['cid'],category)
+        self.isWaiting=False
         if response['status_code']==403:
             self.master.error403()
             return

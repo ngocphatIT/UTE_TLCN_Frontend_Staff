@@ -21,10 +21,14 @@ class LecturerManagementFrame(BaseManagementFrame):
         super().packCtrlDefault()
         self.btnIssuanceAccount.grid(row=2,column=0)
     def issuanceAccount(self):
-        selected=self.myTable.getSelectedItem(mode='MAP')
-        data={'id':selected['lid'],
-            'role':'LECTURER',
-            'name':selected['name'],
-            'currentUsername':selected['account']
-        }
-        _account1(self.mainScreen,self,data).run()
+        try:
+            selected=self.myTable.getSelectedItem(mode='MAP')
+            data={'id':selected['lid'],
+                'role':'LECTURER',
+                'name':selected['name'],
+                'currentUsername':selected['account']
+            }
+            _account1(self.mainScreen,self,data).run()
+        except:
+            messagebox.showerror("Cấp/đổi tài khoản","Chưa chọn đối tượng!")
+            return

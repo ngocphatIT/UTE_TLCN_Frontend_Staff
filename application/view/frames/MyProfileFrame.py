@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from tkinter.ttk import Combobox
 from ...service.SQLLiteService import SessionDataService
 from ...service.StaffService import StaffService
@@ -82,14 +83,34 @@ class MyProfileFrame(Frame):
             temp={'label':lbl,'type':type}
             self.dictWidget[i]=temp
             row+=1
-        # self.btnEdit=Button(self,text='Chỉnh sửa',font=_textFont)
+        self.btnEditValue=StringVar()
+        self.btnEditValue.set("Chỉnh sửa")
+        # self.btnEdit=Button(self,textvariable=self.btnEditValue,command=self.btnEditAction,font=_textFont)
         # self.btnEdit.grid(row=row,column=2,pady=20)
-        # # self.btnChangePassword=Button(self,text='Đổi mật khẩu')
-        # # self.btnChangPassword(row=row,column=2)
+        # # # self.btnChangePassword=Button(self,text='Đổi mật khẩu')
+        # # # self.btnChangPassword(row=row,column=2)
         # self.btnCancel=Button(self,text='Hủy',font=_textFont)
         # self.btnCancel.grid(row=row,column=3,sticky='w')
+    def getDataOfForm(self):
+        temp={}
+        for i in self.dictWidget.keys():
+            temp[i]=" ".join(self.dictWidget[i]['type'].get().split())
+        return temp
+    def btnEditAction(self):
+        if self.btnEditValue.get() == "Chỉnh sửa":
+            self.dictWidget['email']['type'].config(state='normal')
+            self.btnEditValue.set("Lưu")
+        elif self.btnEditValue.get() =='Lưu':
+            data=self.getDataOfForm()
+            response=_service().update(data['id'], data)
+            if response["status_code"]==201:
+                self.getProfile()
+                messagebox.showinfo("Thành công","Cập nhật thành công!")
+                self.btnEditValue.set("Chỉnh sửa")
+                self.dictWidget['email']['type'].config(state='readonly')
+            else:
+                messagebox.showerror("Lỗi","Cập nhật thất bại!")
         
-
     def packFrame(self):
         # self.lblTitle.pack()
         # self.lblStatusAction.pack()
