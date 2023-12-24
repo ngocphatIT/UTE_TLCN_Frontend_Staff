@@ -1,8 +1,14 @@
 import sqlite3
 
-
+import os
 class SessionDataService:
       def __init__(self, path="application/data/default.db"):
+            if not os.path.exists(path):
+                  if not os.path.exists(f'''{path.split("/")[0]}/{path.split("/")[1]}'''):
+                        os.makedirs(f'''{path.split("/")[0]}/{path.split("/")[1]}''')
+
+                  fp = open(path, 'x')
+                  fp.close()
             self.connect = sqlite3.connect(path)
             self.cursor = self.connect.cursor()
             try:
@@ -56,7 +62,6 @@ class SessionDataService:
             )[0][0]
 
       def setAuthorization(self, authorization):
-            print(authorization)
             maxSid = self.getMaxSid()
             return self.execute(
                   f"""UPDATE sessions SET authorization = "{authorization}" WHERE sid = {maxSid};"""

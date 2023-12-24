@@ -19,7 +19,6 @@ class BaseManagementFrame(Frame):
         self.ctrlFrame=Frame(self)
         self.model=model()
         self.myTable=DataGridView(self,IDColumns=['STT']+self.model.getColumnID(),showColumns=['STT']+self.model.getColumnShow(), show="headings",height=30)
-    
         self.addDataDialog=addDataDialog
         self.editDataDialog=editDataDialog
         self.service=service()
@@ -35,7 +34,6 @@ class BaseManagementFrame(Frame):
             response=self.handleErrorRepsonse(self.service.getByFilter())
             if response[0]:
                 for i in range(len(response[1]['message'])):
-                    if response[1]['message'][i]['isDeleted']==False:
                         self.myTable.addRow(response[1]['message'][i])
         except Exception as e:
             print(e)
@@ -74,7 +72,6 @@ class BaseManagementFrame(Frame):
             res=messagebox.askquestion('Xóa', f'Bạn có chắc chắn muốn xóa "{name}" không?')
             if res == 'yes' :
                 response= self.service.delete(selected[self.model.getColumnID()[0]])
-                print(response)
                 if response['status_code']==201:
                     messagebox.showinfo('Thành công',"Xóa thành công!")
                     self.refreshData()

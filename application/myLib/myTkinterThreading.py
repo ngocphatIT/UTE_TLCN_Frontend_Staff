@@ -25,5 +25,4 @@ class MyTkinterThreading:
             functionSetCheck(True)
             self.startWaiting(message,labelObject,functionCheckStatus)
         t=Thread(target=function,args=arguments)
-
         t.start()

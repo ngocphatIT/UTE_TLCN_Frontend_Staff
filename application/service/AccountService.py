@@ -6,6 +6,7 @@ class AccountService(BaseModelService):
     # def getAll(self):
     #     return self.api.sendRequest(f'/api/{self.url}/getAllInfoAllClass',method='GET')
     def inssuanceNewAccount(self,data):
+        self.api.backendURL='http://127.0.0.1:5000/'
         return self.api.sendRequest(f'/api/account/issuanceAccount',method='POST',data=data)
     def getByFilter(self, filter={}):
         return super().getByFilter(filter)

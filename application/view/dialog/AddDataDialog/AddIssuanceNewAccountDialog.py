@@ -45,7 +45,7 @@ class AddIssuanceNewAccountDialog(BaseAddDialog):
 
     def submitActionThread(self):
         values=self.getDataOfForm()
-        print(self.service.inssuanceNewAccount('student',values))
+        # print(self.service.inssuanceNewAccount('student',values))
 
 
         

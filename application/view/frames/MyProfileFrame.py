@@ -83,14 +83,6 @@ class MyProfileFrame(Frame):
             temp={'label':lbl,'type':type}
             self.dictWidget[i]=temp
             row+=1
-        self.btnEditValue=StringVar()
-        self.btnEditValue.set("Chỉnh sửa")
-        # self.btnEdit=Button(self,textvariable=self.btnEditValue,command=self.btnEditAction,font=_textFont)
-        # self.btnEdit.grid(row=row,column=2,pady=20)
-        # # # self.btnChangePassword=Button(self,text='Đổi mật khẩu')
-        # # # self.btnChangPassword(row=row,column=2)
-        # self.btnCancel=Button(self,text='Hủy',font=_textFont)
-        # self.btnCancel.grid(row=row,column=3,sticky='w')
     def getDataOfForm(self):
         temp={}
         for i in self.dictWidget.keys():

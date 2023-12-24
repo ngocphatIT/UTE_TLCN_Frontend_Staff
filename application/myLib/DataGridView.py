@@ -79,7 +79,6 @@ class DataGridView():
         self.STT+=1
     def addRows(self,rows):
         for row in rows:
-            # print(row)
             self.addRow(row)
     def pack(self,filter=None):
         if filter is not None:

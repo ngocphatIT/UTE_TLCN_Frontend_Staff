@@ -34,7 +34,6 @@ class ViewParticipantsFrame(BaseManagementFrame):
             del selected['name']
             del selected['STT']
             if res == 'yes' :
-                print(selected)
                 response=self.service.deleteParticipants(self.classID,selected)
                 if response['status_code']==201:
                     self.refreshData()
@@ -50,7 +49,6 @@ class ViewParticipantsFrame(BaseManagementFrame):
         self.refreshData(isClearSearchValue=False)
         start_time = time.time()
         while self.myTable.isEmpty():
-            print(self.myTable.dataGridView.get_children())
             if time.time()-start_time>=5:
                 break
         if not self.myTable.search(self.typeSearch.get(),self.entrySearch.get()):

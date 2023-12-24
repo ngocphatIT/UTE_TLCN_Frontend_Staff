@@ -29,8 +29,6 @@ class LoginDialog(BaseDialog):
         btnChangePassword.pack(pady=10)
         self.result={'isLogin':False,'message':""}
     def login(self):
-        # t=Thread(target=self.loginThread)
-        # t.start()
         self.loginThread()
     def goToChangePassword(self):
         self.destroy()

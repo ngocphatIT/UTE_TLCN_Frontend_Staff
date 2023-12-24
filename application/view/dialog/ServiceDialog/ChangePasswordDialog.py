@@ -62,7 +62,6 @@ class ChangePasswordDialog(BaseDialog):
                         'exist': 'Tài khoản không tồn tại'}
                 message="Lỗi hệ thống không xác định!"
                 for i in dictError.keys():
-                    print(i)
                     if i in response['message']:
                         message=dictError[i]
                         break

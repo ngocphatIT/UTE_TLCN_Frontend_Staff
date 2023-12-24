@@ -12,7 +12,6 @@ class EditClassDialog(AddClassDialog):
     def updateData(self,data):
         for i in data.keys():
             if i in self.dictInfoWidget:
-                print(i,data[i])
                 if not self.dictInfoWidget[i]['type']==Combobox:
                     self.dictInfoWidget[i]['values']=data[i]
                 else:

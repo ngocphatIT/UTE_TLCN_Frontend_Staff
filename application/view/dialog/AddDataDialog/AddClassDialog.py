@@ -19,7 +19,6 @@ class AddClassDialog(BaseAddDialog):
         course=_courseService.getAll()['message']
         courseValue=[]
         for i in course:
-            if not i['isDeleted']:
                 courseValue.append(f"{i['courseName']} - {i['cid']}")
         self.dictInfoWidget = {'cid':{
             'type':Entry,
@@ -61,7 +60,6 @@ class AddClassDialog(BaseAddDialog):
     def submitActionThread(self):
         myClass=self.getDataOfForm()
         myClass['course']=myClass['course'].split(' - ')[1]
-        print(myClass)
         response=_service.create(myClass)
         self.isWaiting=False
         if response['status_code']==403:

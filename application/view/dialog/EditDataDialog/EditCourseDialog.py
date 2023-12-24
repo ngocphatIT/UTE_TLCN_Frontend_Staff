@@ -24,7 +24,6 @@ class EditCourseDialog(AddCourseDialog):
                     else:
                         index=-1
                         for j in range(len(self.dictInfoWidget[i]['values'])):
-                            print(self.dictInfoWidget[i]['values'][j])
                             if data[i] in self.dictInfoWidget[i]['values'][j]:
                                 index=j
                                 break 

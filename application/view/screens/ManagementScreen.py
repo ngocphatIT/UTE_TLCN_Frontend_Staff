@@ -34,7 +34,7 @@ class ManagementScreen(Frame):
         groupClass.add_command(label="Quản lý loại khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý loại khóa học"))
         groupClass.add_command(label="Quản lý khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý khóa học"))
         groupClass.add_command(label="Quản lý lớp học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
-        groupClass.add_command(label="Yêu cầu tư vấn khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
+        #groupClass.add_command(label="Yêu cầu tư vấn khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
 
         menubar.add_cascade(label="Nhóm lớp học",font=_fontMenuHeader,menu=groupClass)
 

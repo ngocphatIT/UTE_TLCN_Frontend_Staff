@@ -21,7 +21,6 @@ class AccountManagementFrame(BaseManagementFrame):
             selected=self.myTable.getSelectedItem(mode='MAP')
             options=['Xóa tài khoản','Xóa quyền']
             answer=OptionDialog(self.mainScreen,'Xóa',f'''Chọn chế độ xóa đối với tài khoản '{selected["username"]}' có quyền '{selected["role"]}'  ''',options).result
-            print(answer)
             if answer is not None:
                 if options.index(answer)==0:
                     res=messagebox.askquestion('Xóa', f'''Bạn có chắc chắn muốn xóa tài khoản '{selected['username']}' không?''')
