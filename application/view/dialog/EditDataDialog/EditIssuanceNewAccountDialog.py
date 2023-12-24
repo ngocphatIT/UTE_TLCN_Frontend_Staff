@@ -33,7 +33,7 @@ class EditIssuanceNewAccountDialog(AddIssuanceNewAccountDialog):
                 
     def submitActionThread(self):
         dictError={'Account':'Tài khoản đã được sử dụng bởi đối tượng khác!',
-                   'Email':"Email đã được sử dụng bởi đối tượng các!"}
+                    'Email':"Email đã được sử dụng bởi đối tượng các!"}
         account=self.getDataOfForm()
         account['role']=account['role'].split(' - ')[1]
         account['id']=int(account['id'])

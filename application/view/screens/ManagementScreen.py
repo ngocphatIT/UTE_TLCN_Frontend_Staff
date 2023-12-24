@@ -9,6 +9,7 @@ from ..frames.LecturerManagementFrame import LecturerManagementFrame
 from ..frames.AccountManagementFrame import AccountManagementFrame
 from ..frames.ViewParticipantsFrame import ViewParticipantsFrame
 from ..frames.MyProfileFrame import MyProfileFrame
+from ..frames.IntroduceFrame import IntroduceFrame
 from ...service.AccountService import AccountService
 _accountService=AccountService
 _fontMenuHeader=('Arial',12)
@@ -19,7 +20,7 @@ class ManagementScreen(Frame):
         self.currentFrame = None
         self.lastFrame = None
         self.master = master
-        self.master.title("Management System")
+        self.master.title("DevForFuture Management")
         menubar=Menu(self)
         # Create the Teacher Management menu
         myProfile = Menu(menubar, tearoff=0)
@@ -35,7 +36,6 @@ class ManagementScreen(Frame):
         groupClass.add_command(label="Quản lý khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý khóa học"))
         groupClass.add_command(label="Quản lý lớp học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
         #groupClass.add_command(label="Yêu cầu tư vấn khóa học",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý lớp học"))
-
         menubar.add_cascade(label="Nhóm lớp học",font=_fontMenuHeader,menu=groupClass)
 
         # Create the Quản lý học viên menu
@@ -44,9 +44,17 @@ class ManagementScreen(Frame):
         groupUser.add_command(label="Quản lý giảng viên",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý giảng viên"))
         groupUser.add_command(label="Quản lý tài khoản",font=_fontMenuSub,command=lambda: self.showFrame("Quản lý tài khoản"))
         menubar.add_cascade(label="Nhóm người dùng",font=_fontMenuHeader, menu=groupUser)
+        
+        groupAbout = Menu(menubar, tearoff=0)
         self.master.config(menu=menubar)
+        self.introduceFrame=Frame()
+        self.showIntroduce()
+    def showIntroduce(self):
+        self.introduceFrame=IntroduceFrame(self)
+        self.introduceFrame.pack()
         # self.showFrame()
     def getFrame(self,frame):
+        self.introduceFrame.destroy()
         dictFrame={
             # 'Student Management':StudentManagementFrame
             'Quản lý loại khóa học':CourseCategoryManagementFrame,
@@ -76,7 +84,6 @@ class ManagementScreen(Frame):
     def changePassword(self):
         self.master.goToChangePassword(isLogin=True)
 
-        
     def logout(self):
         res=messagebox.askquestion('Đăng xuất', f'Bạn có chắc chắn muốn đăng xuất không?')
         if res=='yes':

@@ -9,8 +9,8 @@ class APIService:
     def __init__(self):
         # from ..config import myConfig
         # if myConfig.getMODE()=='DEV':
-            self.backendURL='http://backendtlcn.devforfuture.com/'
-            # self.backendURL='http://127.0.0.1:5000/'
+            # self.backendURL='http://backendtlcn.devforfuture.com/'
+            self.backendURL='http://127.0.0.1:5000/'
         # else:
             # pass
     # def sendRequest(self, request, data={}, method="GET"):

@@ -130,7 +130,7 @@ class BaseManagementFrame(Frame):
         # self.runDemo()
         # self.getDataFromBackend()
         self.packData()
-        self.pack()
+        self.pack(pady=10)
     def runDemo(self):
         self.myTable=DataGridView(self,IDColumns=["ID", "Name", "Email", "Major"],showColumns=["ID DEMO", "Name DEMO", "Email DEMO", "Major DEMO"], show="headings")
         self.myTable.addRows([
